@@ -1,0 +1,57 @@
+Pour créer un script qui exécute une requête vers `google.com` avec `curl`, journaliser l'exécution, et configurer un cron job pour l'exécuter, suivez ces étapes :
+
+### Étapes pour configurer un cron job
+
+1. **Créer le script** :
+   Créez un fichier de script, par exemple `check_google.sh`.
+
+   ```bash
+   nano ~/check_google.sh
+   ```
+
+   Ajoutez le code suivant dans ce fichier :
+
+   ```bash
+   #!/bin/bash
+   # Exécuter une requête vers google.com et journaliser la réponse
+   response=$(curl -s -o /dev/null -w "%{http_code}" https://www.google.com)
+   timestamp=$(date)
+   echo "$timestamp: Google responded with status code $response" >> ~/google_check.log
+   ```
+
+   Enregistrez et fermez l'éditeur (dans `nano`, utilisez `CTRL + X`, puis `Y` pour confirmer).
+
+2. **Rendre le script exécutable** :
+   Exécutez la commande suivante pour rendre le script exécutable :
+
+   ```bash
+   chmod +x ~/check_google.sh
+   ```
+
+3. **Configurer le cron job** :
+   Ouvrez le crontab pour l'utilisateur actuel :
+
+   ```bash
+   crontab -e
+   ```
+
+   Ajoutez la ligne suivante pour exécuter le script toutes les minutes :
+
+   ```
+   * * * * * /bin/bash ~/check_google.sh
+   ```
+
+   Enregistrez et fermez l'éditeur.
+
+4. **Tester avec `tail -f`** :
+   Ouvrez un terminal et exécutez la commande suivante pour voir les logs en temps réel :
+
+   ```bash
+   tail -f ~/google_check.log
+   ```
+
+   Vous verrez le statut de la réponse de Google s'afficher dans le fichier `google_check.log` chaque minute.
+
+### Résumé
+
+Vous avez maintenant configuré un script qui exécute une requête vers `google.com` avec `curl`, journalise la réponse dans un fichier log, et vous pouvez observer les logs en temps réel avec `tail -f`. Vous pouvez ajuster la fréquence d'exécution du cron job selon vos besoins.
